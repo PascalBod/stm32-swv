@@ -1,5 +1,21 @@
 # Using SWV with an STM32 microcontroller
 
+## Overview
+
+SWV (Serial Wire Viewer) is a trace feature found on many ARM Cortex-M3, M4, M7, M23, and M33 processors.
+Cortex-M0 and Cortex-M0+ do not have SWV. SWV information can be sent out using a dedicated pin, SWO (Serial Wire
+Output) pin.
+
+SWV can be activated when debugging with SWD (Serial Wire Debug), the Arm's alternative to JTAG.
+
+This article presents an overview of the configuration and use of SWV, for an STM32 Nucleo board, the [NUCLEO-L476RG](https://www.st.com/en/evaluation-tools/nucleo-l476rg.html). This board integrates an ST-LINK programmer/debugger, so there is no need for a separate JTAG/SWD probe. And we use [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) version 1.8.0 as development environment.
+
+## Starting from scratch
+
+### 
+
+
+
 ## Context
 
 Recently, I was adding a new functionality to an existing application written for an STM32L476RG. This application uses version 2.1.0 of ST's LoRaWAN stack, and the trace utility delivered with the stack. With the trace utility, it sends messages on UART2, and accepts commands on this UART as well.

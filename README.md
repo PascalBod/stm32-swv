@@ -64,7 +64,7 @@ Last step: click on the red button, at the right of the settings icon. This inst
 
 Resume the execution.
 
-The SWV Exception Trace Log tab displays the exceptions when they happen. In our example, the only active code is the SysTick handler, called every time the SysTick interruption is triggered. Consequently, the **Data** tab of the SWV Exception Trace Log tab onlydisplays periodic calls to the SysTick handler:
+The SWV Exception Trace Log tab displays the exceptions when they happen. In our example, the only active code is the SysTick handler, called every time the SysTick interruption is triggered. Consequently, the **Data** tab of the SWV Exception Trace Log tab only displays periodic calls to the SysTick handler:
 
 ![](images/exceptionLogData01.png)
 

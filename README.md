@@ -44,7 +44,7 @@ Save the `ioc` file, generate code and build the project.
 
 #### Displaying exceptions
 
-Create a debug configuration for the project. In the **Debugger** tab, tick **Enable** in the **Serial Wire Viewer** pane. Then set **Core Clock** to the value of HCLK. For me, it was set to 16.0 by default. I set it to the value of HCLK: 80.
+Create a debug configuration for the project. In the **Debugger** tab, tick **Enable** in the **Serial Wire Viewer** pane. Then set **Core Clock** to the value of HCLK. For me, Core Clock was set to 16.0 by default. I set it to the value of HCLK: 80.
 
 ![](images/SWVConfig01.png)
 
@@ -52,11 +52,15 @@ Start the debug session.
 
 The execution stops at the first instruction after `main()`. Select **Window > Show View > SWV Exception Trace Log**. Click on the **SWV Exception Trace Log** tab that has been added to the window containing the **Console** tab.
 
-Then click on the tool icon, on the right-hand side, and tick **EXETRC: Trace Exceptions**. Click on the **OK** button.
+Then click on the settings icon (wrench + screwdriver), on the right-hand side.
+
+![](images/SWVTools01.png)
+
+In the newly displayed window, tick **EXETRC: Trace Exceptions**. Click on the **OK** button.
 
 ![](images/SWVEXETRC01.png)
 
-Last step: click on the red button, at the right of the tool icon. This instructs SWV to start tracing as soon as the program execution is resumed.
+Last step: click on the red button, at the right of the settings icon. This instructs SWV to start tracing as soon as the program execution is resumed.
 
 Resume the execution.
 
@@ -67,3 +71,5 @@ The SWV Exception Trace Log tab displays the exceptions when they happen. In our
 The **Statistics** tab makes clear that SysTick handler is the only active code:
 
 ![](images/exceptionLogStatistics01.png)
+
+*To be continued...*

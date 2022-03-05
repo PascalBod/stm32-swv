@@ -99,7 +99,7 @@ Then, we modify the infinite `while` loop of the `main()` function, in order to 
     new_ticks = HAL_GetTick() / PERIOD;
     if (new_ticks > prev_ticks)
       {
-	    prev_ticks = new_ticks;
+        prev_ticks = new_ticks;
       }
     /* USER CODE END WHILE */
 
@@ -139,7 +139,7 @@ Let's use it to display `prev_ticks`, instead of enabling the Comparator 0. The 
     new_ticks = HAL_GetTick() / PERIOD;
     if (new_ticks > prev_ticks)
       {
-	    prev_ticks = new_ticks;
+        prev_ticks = new_ticks;
         // ITM_SendChar can send 32-bit values.
         ITM_SendChar(prev_ticks);
       }

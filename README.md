@@ -12,7 +12,7 @@ Output) pin, to the debugging host. The following features are provided:
 
 SWV can be activated when debugging with SWD (Serial Wire Debug), the Arm's alternative to JTAG.
 
-This article presents an overview of the configuration and use of SWV, for an STM32 Nucleo board, the [NUCLEO-L476RG](https://www.st.com/en/evaluation-tools/nucleo-l476rg.html). This board integrates an ST-LINK programmer/debugger, so there is no need for a separate JTAG/SWD probe. We use [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) version 1.8.0 as development environment.
+This article presents an overview of the configuration and use of SWV, for an STM32 Nucleo board, the [NUCLEO-L476RG](https://www.st.com/en/evaluation-tools/nucleo-l476rg.html). This board integrates an ST-LINK programmer/debugger, so there is no need for a separate JTAG/SWD probe. [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) version 1.8.0 is used as development environment.
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ For STM32 microcontrollers, SWD is mapped to PA13 (SWDIO), PA14 (SWCLK) and PB3 
 
 When creating a new project, CubeMX sets PA13 and PA14 as active (green color in CubeMX view below), while PB3 is reserved but inactive (orange color). 
 
-A good thing is to declare PB3 as active, in order to protect it from being selected for another use, so that we can use SWO.
+A good thing is to declare PB3 as active, in order to protect it from being selected for another use, so that SWO can be used.
 
 ![](images/SWVPins01.png)
 
@@ -54,13 +54,13 @@ Create a debug configuration for the project. In the **Debugger** tab, tick **En
 
 Start the debug session.
 
-The execution stops at the first instruction after `main()`. Select **Window > Show View > SWV > SWV Exception Trace Log**. Click on the **SWV Exception Trace Log** tab that has been added to the window containing the **Console** tab.
+The execution stops at the first instruction after `main()`. Select **Window > Show View > SWV > SWV Exception Trace Log**. Click on the **SWV Exception Trace Log** view that has been added to the tabbed notebook containing the **Console** view.
 
 Then click on the settings icon (wrench + screwdriver), on the right-hand side.
 
 ![](images/SWVTools01.png)
 
-In the newly displayed window, tick **EXETRC: Trace Exceptions**. Click on the **OK** button.
+In the newly displayed view, tick **EXETRC: Trace Exceptions**. Click on the **OK** button.
 
 ![](images/SWVEXETRC01.png)
 
@@ -68,7 +68,7 @@ Last step: click on the red button, at the right of the settings icon. This inst
 
 Resume the execution.
 
-The SWV Exception Trace Log tab displays the exceptions when they happen. In our example, the only active code is the SysTick handler, called every time the SysTick interruption is triggered. Consequently, the **Data** tab of the SWV Exception Trace Log tab only displays periodic calls to the SysTick handler:
+The SWV Exception Trace Log view displays the exceptions when they happen. In our example, the only active code is the SysTick handler, called every time the SysTick interruption is triggered. Consequently, the **Data** tab of the SWV Exception Trace Log view only displays periodic calls to the SysTick handler:
 
 ![](images/exceptionLogData01.png)
 
@@ -78,7 +78,7 @@ The **Statistics** tab makes clear that SysTick handler is the only active code:
 
 #### Displaying the value of a variable with SWV
 
-SWV allows to display the value of a variable, almost in real time, without disturbing the execution conditions of the application.
+SWV allows to display the value of a variable, almost in real time, without disturbing the execution context of the application.
 
 To test this function, we declare a few variables at the main level of `main.c`:
 
@@ -112,12 +112,52 @@ Start a debug session, and open the SWV settings window. In this window, tick **
 
 ![](images/variableTrace01.png)
 
-Select **Window > Show View > SWV > SWV Trace Log**. This adds a new tab, **SWV Trace Log** to the console window.
+Select **Window > Show View > SWV > SWV Trace Log**. This adds a new view, **SWV Trace Log** to the console tabbed notebook.
 
 Now click on the SWV red button, to start the SWV session, and resume execution. 
 
-The SWV Trace Log tab displays every write operation to the variable, with the value of the PC for the instruction which performed the write operation:
+The SWV Trace Log view displays every write operation to the variable, with the value of the PC for the instruction which performed the write operation:
 
 ![](images/variableTrace02.png)
+
+Stop the execution. 
+
+It's possible to add a graph view, which displays the evolution of the `prev_ticks` variable value over time. Select **Window > Show View > SWV > SWV Data Trace Timeline Graph**. This adds a new view, with the same name:
+
+![](images/variableTimeline01.png)
+
+#### Displaying a value with SWV
+
+In addition to displaying the value of an existing variable, SWV can be used by the application to send some data to the debugging PC. This is done thanks to the `ITM_SendChar()` function, declared in `core_cm4.h` for our NUCLEO L476 board.
+
+Let's use it to display `prev_ticks`, instead of enabling the Comparator 0. The main loop is modified as follows:
+
+```C
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    new_ticks = HAL_GetTick() / PERIOD;
+    if (new_ticks > prev_ticks)
+      {
+	    prev_ticks = new_ticks;
+        // ITM_SendChar can send 32-bit values.
+        ITM_SendChar(prev_ticks);
+      }
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+```
+
+In SWV settings window, untick **Enable** of Comparator 0, and tick port 0 in the **ITM Stimulus Ports**:
+
+![](images/itmPort01.png)
+
+ITM a is specific logic block, known as the Instrumentation Trace Macrocell, that enables applications to write arbitrary data to the SWO pin. It can do this over 32 multiplexed ports (or channels). The `ITM_SendChar()` function uses port 0. It's easy to add your own functions that write data to other ports.
+
+Data is displayed in the SWV Trace Log view:
+
+![](images/itmPort02.png)
 
 *To be continued...*

@@ -160,4 +160,9 @@ Data is displayed in the SWV Trace Log view:
 
 ![](images/itmPort02.png)
 
+## Reference documents
+
+* [AN4989 - STM32 microcontroller debug toolbox](https://www.st.com/content/ccc/resource/technical/document/application_note/group0/3d/a5/0e/30/76/51/45/58/DM00354244/files/DM00354244.pdf/jcr:content/translations/en.DM00354244.pdf) - section 7.3
+* [UM2609 - STM32CubeIDE user guide](https://www.st.com/content/ccc/resource/technical/document/user_manual/group1/f8/a2/48/77/68/e6/4b/74/DM00629856/files/DM00629856.pdf/jcr:content/translations/en.DM00629856.pdf) - section 4
+
 *To be continued...*

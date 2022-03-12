@@ -160,9 +160,49 @@ Data is displayed in the SWV Trace Log view:
 
 ![](images/itmPort02.png)
 
+## Enabling SWV for an existing application
+
+To enable SWV for an existing application, we have to ensure that the three SWV pins are available, and we have to know the core clock frequency, as we saw above.
+
+### Checking SWV pins availability
+
+Of course, the first thing to do is to check the schematics of the development board you are using. Usually, SWDIO and SWCLK are available as they are used by SWD. It may happen that PB3 (SWO) is used for another function (GPIO, UART, SPI, etc.) If it is used by the code that you'd like to debug, sadly, you will not be able to use SWV. But if PB3 is used by a part of the code that you can ignore, for instance to control some peripherals that are not concerned by the problem you are debugging, chances are that you will be able to use SWO.
+
+Let's consider that the PB3 pin is used by the application for another function, but that it is acceptable to switch it to its SWO function (of course, it must be wired to the JTAG probe. This is the case for the development board we are using here). Additionally, let's consider that we don't know well the source code of the application we are debugging. The question is: how to rapidly find where to configure PB3?
+
+One way to answer this question is to set a watchpoint on the control register used to configure the related GPIO:
+
+* Start a debug session
+* If the SFR (Special Functions Registers) view is not displayed, open it with **Window > Show View > SFRs**
+* Navigate to the MODER register for GPIOB:
+
+![](images/sfrs01.png)
+
+* The address of the register is displayed: `0x48000400`, in our case
+* If the Memory view is not displayed, open it with **Window > Show View > Memory**
+* Click on the `+` tool of the Memory view, and enter the above address:
+
+![](images/memMonitor01.png)
+
+* Right-click on the 32-bit value displayed for this address in the right-hand side pane, and select **Add Watchpoint (C/C++)...**:
+
+![](images/addWatchpoint01.png)
+
+* In the properties window, untick **Read** and tick **Write**
+* Resume the execution. It will stop every time the control register is written. By looking at the calls chain in the Debug view, you will rapidly find the place where PB3 is configured, and you will be able to adapt the code so that PB3 is set to SWO
+
+### Checking Core Clock frequency
+
+It may happen that the application you are debugging has not been created with CubeMX. In which case, you don't have any `ioc` file, and you can't look at the graphical view of the clocks configuration.
+
+In this case, one way to get the Core Clock frequency is to display the value of the `SystemCoreClock` global variable. This variable is defined in the `system_stm32l4xx.c` file, provided by the STM32CubeL4 package. In the Expressions view, add SystemCoreClock.
+
+Start a debug session, and advance step by step until the clocks are configured. The value of SystemCoreClock displayed in the Expressions view should now be the one you can use to configure SWV:
+
+![](images/clockExpr01.png)
+
 ## Reference documents
 
 * [AN4989 - STM32 microcontroller debug toolbox](https://www.st.com/content/ccc/resource/technical/document/application_note/group0/3d/a5/0e/30/76/51/45/58/DM00354244/files/DM00354244.pdf/jcr:content/translations/en.DM00354244.pdf) - section 7.3
 * [UM2609 - STM32CubeIDE user guide](https://www.st.com/content/ccc/resource/technical/document/user_manual/group1/f8/a2/48/77/68/e6/4b/74/DM00629856/files/DM00629856.pdf/jcr:content/translations/en.DM00629856.pdf) - section 4
 
-*To be continued...*

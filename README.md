@@ -2,8 +2,7 @@
 
 ## Overview
 
-SWV (Serial Wire Viewer) is a trace feature that can be used with many ARM Cortex-M3, M4 and higher processors (but not with Cortex-M0 and Cortex-M0+). SWV trace information can be sent out using a dedicated pin, SWO (Serial Wire
-Output) pin, to the debugging host. The following features are provided:
+SWV (Serial Wire Viewer) is a trace feature that can be used with many ARM Cortex-M3, M4 and higher processors (but not with Cortex-M0 and Cortex-M0+). SWV trace information can be sent out using a dedicated pin, SWO (Serial Wire Output) pin, to the debugging host. The following features are provided:
 * Program counter sampling
 * Event counters that show CPU cycle statistics
 * Exception and Interrupt execution with timing statistics
@@ -140,7 +139,7 @@ Let's use it to display `prev_ticks`, instead of enabling the Comparator 0. The 
     if (new_ticks > prev_ticks)
       {
         prev_ticks = new_ticks;
-        // ITM_SendChar can send 32-bit values.
+        // The ITM_SendChar argument is converted to a char.
         ITM_SendChar(prev_ticks);
       }
     /* USER CODE END WHILE */
@@ -166,7 +165,7 @@ To enable SWV for an existing application, we have to ensure that the three SWV 
 
 ### Checking SWV pins availability
 
-Of course, the first thing to do is to check the schematics of the development board you are using. Usually, SWDIO and SWCLK are available as they are used by SWD. It may happen that PB3 (SWO) is used for another function (GPIO, UART, SPI, etc.) If it is used by the code that you'd like to debug, sadly, you will not be able to use SWV. But if PB3 is used by a part of the code that you can ignore, for instance to control some peripherals that are not concerned by the problem you are debugging, chances are that you will be able to use SWO.
+Of course, the first thing to do is to check the schematics of the development board you are using. Usually, SWDIO and SWCLK are available as they are used by SWD. It may happen that PB3 (SWO) is used for another function (GPIO, UART, SPI, etc.) If it is used by the code that you'd like to debug, sadly, you will not be able to use SWV without modifying the code. But if PB3 is used by a part of the code that you can ignore, for instance to control some peripherals that are not concerned by the problem you are debugging, chances are that you will be able to use SWO.
 
 Let's consider that the PB3 pin is used by the application for another function, but that it is acceptable to switch it to its SWO function (of course, it must be wired to the JTAG probe. This is the case for the development board we are using here). Additionally, let's consider that we don't know well the source code of the application we are debugging. The question is: how to rapidly find where to configure PB3?
 
